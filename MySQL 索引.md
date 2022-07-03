@@ -374,25 +374,25 @@ MySQL提供了两个事务型存储引擎：InnoDB和NDB Cluster（MySQL集群�
 ### 7.1 Readview
 <img src="./mysql/readview.png" alt="readview" style="zoom:67%;" />
 
-Readview是一个快照。readview中四变量。  
-1. 活跃事务（活跃事务就是没提交的事务）集合 m_ids；  
-2. 当前事务id creator_trx_id；  
-3. 集合中的最小值 min_trx_id；  
-4. 集合中最大值的下个值 max_trx_id。  
+Readview是一个快照，readview中的四个变量：  
+1. 活跃事务（活跃事务就是没提交的事务）集合 —— `m_ids`；  
+2. 当前事务id —— `creator_trx_id`；  
+3. 集合中的最小值 —— `min_trx_id`；  
+4. 集合中最大值的下个值 —— `max_trx_id`。  
 
 
 MySQL中的表的每一行数据，从事务的视角去看，其实不止一行数据，而是一个行数据链，被称为数据的版本链，每一行数据，都要额外维护 trx_id（事务id） 和 roll_pointer（回滚指针），每一次更新都会新生产一个版本，旧版本保存在 undo_log当中，用作事务回滚。  
 <img src="./mysql/版本链.png" alt="版本链" style="zoom:67%;" />
 
 这一行数据的哪个版本对事务可见，要根据创建事务时的readview决定，规则如下：  
-1. trx_id == creator_trx_id : 表示是这条记录是这个事务自己创建的;  
-2. trx_id < min_trx_id : 表示是这条记录是已提交的数据;  
-3. trx_id > max_trx_id : 表示这个数据是被 创建这个readview 之后 开启的事务创建的，所以当前ReadView中无法读取这行数据;  
-4. min_trx_id <= trx_id <= max_trx_id : 如果是ids集合中的，说明创建ReadView的时候，这行数据还没有被提交（活跃的事务），不能读取；如果不是ids集合中的，说明创建ReadView的时候，这行数据以及被提交，可以读取。  
+1. `trx_id == creator_trx_id` : 表示是这条记录是这个事务自己创建的;  
+2. `trx_id < min_trx_id` : 表示是这条记录是已提交的数据;  
+3. `trx_id > max_trx_id` : 表示这个数据是被 创建这个readview 之后 开启的事务创建的，所以当前ReadView中无法读取这行数据;  
+4. `min_trx_id <= trx_id <= max_trx_id` : 如果是ids集合中的，说明创建ReadView的时候，这行数据还没有被提交（活跃的事务），不能读取；如果不是ids集合中的，说明创建ReadView的时候，这行数据以及被提交，可以读取。  
 
 
 **执行查询语句时：**
-1. 会先到版本链中查询,并且获取到最新版本的trx_id；  
+1. 会先到版本链中查询,并且获取到最新版本的`trx_id`；  
 2. 然后根据 事务隔离级别 和 快照读的规则，判定最新的数据是否对当前ReadView可见，如果可见，直接读取；  
 3. 如果不可见，顺着版本链依次往下，要么找到可见的版本，要么返回null.  
 
