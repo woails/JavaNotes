@@ -106,7 +106,7 @@ InnoDB选择**主键聚集数据**，但是
 
 `InnoDB`的聚簇索引实际上是在<font color='red'>同一个结构中保存了B-Tree索引和数据行</font>。叶子页包含了行的全部数据，但是节点页只包含索引列。
 
-<img src="D:/blog/hexo/source/_posts/mysql/%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95.png" alt="聚簇索引" style="zoom:50%;" />
+<img src="./mysql/%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95.png" alt="聚簇索引" style="zoom:50%;" />
 
 > 在InnoDB中，**聚簇索引就是”表“**。每个叶子节点都包含了主键值、事务ID、用于事务和MVCC的回滚指针，以及所以剩余的列的值，如果主键是前缀索引，也会包含完整的主键列和剩余的其他了列。
 
@@ -161,13 +161,13 @@ CREATE TABLE layout_test(
 
 对于MyISAM，在主键上建立索引和在非主键上创建索引在结构上没有什么区别，他们的叶子页存储的都是指向数据表行的指针。
 
-<img src="D:/blog/hexo/source/_posts/mysql/MyISAM%E7%B4%A2%E5%BC%95.png" alt="聚簇索引" style="zoom:67%;" />
+<img src="./mysql/MyISAM%E7%B4%A2%E5%BC%95.png" alt="聚簇索引" style="zoom:67%;" />
 
 **InnoDB**
 
 InnoDB的<font color = 'red'>二级（辅助）索引和聚簇索引在叶子页节点的结构上不一样</font>，InnoDB的二级索引叶子节点中存储的不是”行指针“，而是用主键值作为指向行的”指针“，这也使二级索引占用更多空间；而聚簇索引的叶子节点包含了行的全部信息。
 
-<img src="D:/blog/hexo/source/_posts/mysql/InnoDB%E7%B4%A2%E5%BC%95.png" alt="InnoDB索引" style="zoom:67%;" />
+<img src="./mysql/InnoDB%E7%B4%A2%E5%BC%95.png" alt="InnoDB索引" style="zoom:67%;" />
 
 图5-8可以看到，以col2建立索引的叶子节点，包含了索引列和主键值。
 
