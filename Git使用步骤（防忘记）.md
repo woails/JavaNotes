@@ -5,9 +5,9 @@
 4. 输入 `git add .` 将项目添加到暂存区，注意： . 前面有空格，代表添加所有文件;  
 5. 输入 git commit -m "注释内容" 将项目提交到Git仓库;  
 6. 打开GitHub新建一个仓库(如果已有仓库就忽略这一步);  
-7. 输入 git branch -M main ，上传到 main 分支;  
+7. 输入 `git branch -M main` ，上传到 main 分支;  
 8. 输入：`git remote add origin 仓库地址`，和远程仓库连接;  
-9. 输入 git push -u origin main 将本地项目推送到远程仓库。  
+9. 输入 `git push -u origin main` 将本地项目推送到远程仓库。  
   
 ## 2 github中markdown使用注意事项
 1. 如果要换行，后面加两个空格；  
